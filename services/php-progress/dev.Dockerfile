@@ -11,16 +11,13 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable mongodb \
     && docker-php-ext-install zip
 
-# Install composer globally
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set the working directory
 WORKDIR /var/www/html
 
 COPY . .
-
-# Make sure the composer binary is executable
-RUN chmod +x /usr/local/bin/composer
 
 RUN composer install
 
