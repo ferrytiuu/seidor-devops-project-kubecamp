@@ -1,6 +1,13 @@
 FROM php:8.2-bullseye AS builder
 
-RUN apt update && apt install -y git
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    libzip-dev \
+    unzip \
+    git \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb \
+    && docker-php-ext-install zip
 
 LABEL lang="php"
 
@@ -10,21 +17,32 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock* ./
 
+RUN composer update
 RUN composer install --no-dev
 
 
 # -----------------------------------------------------------------
 
-FROM php:8.2-alpine
+FROM php:8.2-fpm-alpine
 
 WORKDIR /var/www/html
 
 LABEL lang="php"
 
-RUN apk add --no-cache libpq
+RUN apk add --no-cache libpq \
+  autoconf \
+  g++ \ 
+  make \
+  unzip \
+  git
+
+RUN pecl install mongodb \
+  && docker-php-ext-enable mongodb
 
 COPY --from=builder /var/www/html/vendor ./vendor
 
 COPY . .
 
-CMD ["php", "-S", "0.0.0.0:9000", "src/index.php"]
+RUN chown -R www-data:www-data /var/www/html
+
+CMD ["php-fpm"]
