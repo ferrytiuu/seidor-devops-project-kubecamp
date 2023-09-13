@@ -86,10 +86,10 @@ services:
   python-discuss:
     build:
       context: ./python-discuss
-      dockerfile: ./dev.Dockerfile
+      dockerfile: ./Dockerfile
     restart: unless-stopped
-    volumes:
-      - ./python-discuss:/app
+    # volumes:
+    #   - ./python-discuss:/app
     ports:
       - 8083:8083
     environment:
