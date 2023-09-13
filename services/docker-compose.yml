@@ -59,10 +59,10 @@ services:
   php-progress:
     build:
       context: ./php-progress
-      dockerfile: ./dev.Dockerfile
+      dockerfile: ./Dockerfile
     restart: unless-stopped
-    volumes:
-      - ./php-progress:/var/www/html
+    # volumes:
+    #   - ./php-progress:/var/www/html
     ports:
       - 9000:9000
     environment:
