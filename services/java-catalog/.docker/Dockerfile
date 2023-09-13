@@ -7,7 +7,7 @@ RUN gradle clean build
 FROM openjdk:21-ea-17-slim-bullseye
 
 WORKDIR /app
-COPY --from=build /app/build/libs/blog-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY --from=build /app/build/libs/KubeCamp.Catalog-1.0.0.jar /app.jar
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
