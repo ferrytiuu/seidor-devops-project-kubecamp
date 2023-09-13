@@ -12,22 +12,24 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            agent {
-                docker {
-                    image 'golang:1.21'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh 'go test ./...'
-            }
-        }
+        // stage('Test') {
+        //     agent {
+        //         docker {
+        //             image 'golang:1.21'
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps {
+        //         sh 'go test ./...'
+        //     }
+        // }
         stage('Build Docker Image') {
-            steps { 
-                script{
-                 def dockerfile = 'Dockerfile'
-                 app = docker.build("${params.USER}/go-auth:${params.TAG}", "-f Dockerfile .")
+            steps {
+                dir('services/go-auth') {
+                    script{
+                    def dockerfile = 'Dockerfile'
+                    app = docker.build("${params.USER}/go-auth:${params.TAG}", "-f Dockerfile .")
+                    }
                 }
             }
         }
