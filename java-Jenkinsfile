@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'USER', defaultValue: 'ferrytiuu', description: 'Username')
+        string(name: 'TAG', defaultValue: 'latest', description: 'Version of the image')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-java -Dsonar.sources=./services/java-catalog -Dsonar.test.inclusions=**/*.java"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('services/java-catalog') {
+                    script{
+                        def dockerfile = 'Dockerfile'
+                        app = docker.build("${params.USER}/java-catalog:${params.TAG}", "-f .docker/Dockerfile .")
+                    }
+                }
+            }
+        }
+         stage('Push image') {
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'ferran.dockerhub') {
+                        app.push()
+                    }
+                }
+            }
+        }   
+    }   
+}

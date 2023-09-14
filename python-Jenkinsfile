@@ -12,22 +12,24 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            agent {
-                docker {
-                    image 'golang:1.21'
-                    reuseNode true
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-python -Dsonar.sources=./services/python-discuss -Dsonar.inclusions=**/*.py"
+                    }
                 }
             }
-            steps {
-                sh 'go test ./...'
-            }
         }
+
         stage('Build Docker Image') {
-            steps { 
-                script{
-                 def dockerfile = 'Dockerfile'
-                 app = docker.build("${params.USER}/go-auth:${params.TAG}", "-f Dockerfile .")
+            steps {
+                dir('services/python-discuss') {
+                    script{
+                        def dockerfile = 'Dockerfile'
+                        app = docker.build("${params.USER}/python-discuss:${params.TAG}", "-f Dockerfile .")
+                    }
                 }
             }
         }

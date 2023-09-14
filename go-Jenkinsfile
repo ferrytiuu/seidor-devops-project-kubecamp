@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'USER', defaultValue: 'ferrytiuu', description: 'Username')
+        string(name: 'TAG', defaultValue: 'latest', description: 'Version of the image')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-go -Dsonar.sources=./services/go-auth -Dsonar.exclusions=**/*_test.go -Dsonar.tests=./services/go-auth -Dsonar.test.inclusions=**/*_test.go"
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps{
+                dir('services/go-auth') {
+                    script{
+                        testingApp = docker.build("${params.USER}/go-auth-test:${params.TAG}", "-f Dockerfile.test .")
+                        testingApp.run()
+                    }
+                }
+            }
+            
+        }
+        stage('Build Docker Image') {
+            steps {
+                dir('services/go-auth') {
+                    script{
+                        def dockerfile = 'Dockerfile'
+                        app = docker.build("${params.USER}/go-auth:${params.TAG}", "-f Dockerfile .")
+                    }
+                }
+            }
+        }
+         stage('Push image') {
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'ferran.dockerhub') {
+                        app.push()
+                    }
+                }
+            }
+        }   
+    }   
+}
