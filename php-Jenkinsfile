@@ -12,7 +12,7 @@ pipeline {
             }
         }
 
-        tage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube_5.0'
