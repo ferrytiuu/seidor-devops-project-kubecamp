@@ -12,11 +12,12 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        tage('SonarQube Analysis') {
             steps {
-                dir('services/php-progress') {
-                    withSonarQubeEnv('aroldev sonarqube') {
-                        sh 'sonar-scanner'
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-php -Dsonar.sources=./services/php-progress -Dsonar.inclusions=**/*.php -Dsonar.exclusions=*./services/php-progress/src/Tests/*.php -Dsonar.test.inclusions=*./services/php-progress/src/Tests/*.php"
                     }
                 }
             }
@@ -27,7 +28,7 @@ pipeline {
                 dir('services/php-progress') {
                     script{
                         def dockerfile = 'Dockerfile'
-                        app = docker.build("${params.USER}/php-progress:${params.TAG}", "-f .docker/Dockerfile .")
+                        app = docker.build("${params.USER}/php-progress:${params.TAG}", "-f .Dockerfile .")
                     }
                 }
             }
