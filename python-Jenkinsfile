@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'USER', defaultValue: 'ferrytiuu', description: 'Username')
+        string(name: 'TAG', defaultValue: 'latest', description: 'Version of the image')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('SonarQube analysis') {
+            steps {
+                dir('services/python-discuss') {
+                    withSonarQubeEnv('aroldev sonarqube') {
+                        sh 'sonar-scanner'
+                    }
+                }
+            }
+        }
+
+        }
+        stage('Build Docker Image') {
+            steps {
+                dir('services/python-discuss') {
+                    script{
+                        def dockerfile = 'Dockerfile'
+                        app = docker.build("${params.USER}/python-discuss:${params.TAG}", "-f Dockerfile .")
+                    }
+                }
+            }
+        }
+         stage('Push image') {
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'ferran.dockerhub') {
+                        app.push()
+                    }
+                }
+            }
+        }   
+    }   
+}
