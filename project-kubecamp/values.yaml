@@ -1,0 +1,110 @@
+# values.yaml
+
+go-auth:
+  image:
+    repository: ferrytiuu/go-auth
+    tag: latest
+  mongoUri: "mongodb://db-auth-mongo:27017/users?connect=direct&authSource=admin"
+  port: 8080
+  secretKey: "pJmJmc4qnEX8/cG/h47zj++9CsFCJY2sda44oFu/USyB6ONEyUO8rg2VdiyvDPYw"
+
+db-auth-mongo:
+  image:
+    repository: mongo
+    tag: latest
+
+java-catalog:
+  image:
+    repository: ferrytiuu/java-catalog
+    tag: latest
+  env:
+    - name: APP_ENV
+      value: "dev"
+    - name: APP_DEBUG
+      value: "1"
+    - name: SERVER_ADDRESS
+      value: "0.0.0.0"
+    - name: SERVER_PORT
+      value: "8081"
+    - name: SPRING_DATASOURCE_URL
+      value: "jdbc:postgresql://db-catalog-postgres:5432/kubecamp_catalog"
+    - name: SPRING_DATASOURCE_USERNAME
+      value: "kubecamp"
+    - name: SPRING_DATASOURCE_PASSWORD
+      value: "kubecamp"
+    - name: SPRING_JPA_HIBERNATE_JDBC_DIALECT
+      value: "org.hibernate.dialect.PostgreSQLDialect"
+    - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+      value: "update"
+
+db-catalog-postgres:
+  image:
+    repository: postgres
+    tag: "14.4"
+  env:
+    - name: POSTGRES_USER
+      value: "kubecamp"
+    - name: POSTGRES_PASSWORD
+      value: "kubecamp"
+    - name: POSTGRES_DB
+      value: "kubecamp_catalog"
+
+php-progress:
+  image:
+    repository: ferrytiuu/php-progress
+    tag: latest
+  env:
+    - name: MONGODB_HOST
+      value: "db-progress-mongo"
+    - name: MONGODB_PORT
+      value: "27017"
+
+php-nginx:
+  image:
+    repository: nginx
+    tag: latest
+
+db-progress-mongo:
+  image:
+    repository: mongo
+    tag: latest
+
+python-discuss:
+  image:
+    repository: ferrytiuu/python-discuss
+    tag: latest
+  env:
+    - name: MONGODB_HOST
+      value: "db-discuss-mongo"
+    - name: MONGODB_PORT
+      value: "27017"
+    - name: MONGODB_DB
+      value: "kubecampDiscussion"
+    - name: PORT
+      value: "8083"
+    - name: AUTH_SERVICE_URL
+      value: "http://go-auth:8080"
+
+db-discuss-mongo:
+  image:
+    repository: mongo
+    tag: latest
+
+nginx:
+  image:
+    repository: nginx
+    tag: latest
+
+mongo:
+  image:
+    repository: mongo
+    tag: latest
+  storageClassName: "standard"
+  storageSize: "1Gi"
+
+db-progress-mongo:
+  image:
+    repository: mongo
+    tag: latest
+  storageClassName: "standard"
+  storageSize: "1Gi"
