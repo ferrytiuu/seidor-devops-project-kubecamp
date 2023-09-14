@@ -12,11 +12,12 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        sstage('SonarQube Analysis') {
             steps {
-                dir('services/java-catalog') {
-                    withSonarQubeEnv('aroldev sonarqube') {
-                        sh 'sonar-scanner'
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-java -Dsonar.sources=./services/java-catalog"
                     }
                 }
             }
