@@ -94,3 +94,17 @@ nginx:
   image:
     repository: nginx
     tag: latest
+
+mongo:
+  image:
+    repository: mongo
+    tag: latest
+  storageClassName: "standard"
+  storageSize: "1Gi"
+
+db-progress-mongo:
+  image:
+    repository: mongo
+    tag: latest
+  storageClassName: "standard"
+  storageSize: "1Gi"

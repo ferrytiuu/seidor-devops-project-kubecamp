@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "my-chart.fullname" . }}
+  labels:
+    app: {{ include "my-chart.name" . }}
+spec:
+  serviceName: {{ .Release.Name }}-db-progress-mongo
+  replicas: 3
+  selector:
+    matchLabels:
+      app: {{ include "my-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "my-chart.name" . }}
+    spec:
+      containers:
+        - name: db-progress-mongo
+          image: {{" .Values.db-progress-mongo.image.repository "}}:{{" .Values.db-progress-mongo.image.tag "}}
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: db-progress-mongo-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: db-progress-mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{" .Values.db-progress-mongo.storageClassName "}}
+        resources:
+          requests:
+            storage: {{" .Values.db-progress-mongo.storageSize "}}

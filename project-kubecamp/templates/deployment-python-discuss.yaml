@@ -16,17 +16,17 @@ spec:
     spec:
       containers:
         - name: python-discuss
-          image: {{ .Values.python-discuss.image.repository }}:{{ .Values.python-discuss.image.tag }}
+          image: {{" .Values.python-discuss.image.repository "}}:{{" .Values.pythondiscuss.image.tag "}}
           ports:
             - containerPort: 8083
           env:
             - name: MONGODB_HOST
-              value: {{ .Values.python-discuss.env.MONGODB_HOST }}
+              value: {{" .Values.python-discuss.env.MONGODB_HOST "}}
             - name: MONGODB_PORT
-              value: {{ .Values.python-discuss.env.MONGODB_PORT }}
+              value: {{" .Values.python-discuss.env.MONGODB_PORT "}}
             - name: MONGODB_DB
-              value: {{ .Values.python-discuss.env.MONGODB_DB }}
+              value: {{" .Values.python-discuss.env.MONGODB_DB "}}
             - name: PORT
-              value: {{ .Values.python-discuss.env.PORT }}
+              value: {{" .Values.python-discuss.env.PORT "}}
             - name: AUTH_SERVICE_URL
-              value: {{ .Values.python-discuss.env.AUTH_SERVICE_URL }}
+              value: {{" .Values.python-discuss.env.AUTH_SERVICE_URL "}}

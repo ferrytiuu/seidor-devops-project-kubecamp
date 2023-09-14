@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
         - name: go-auth
-          image: {{ .Values.go-auth.image.repository }}:{{ .Values.go-auth.image.tag }}
+          image: {{" .Values.go-auth.image.repository "}}:{{" .Values.go-auth.image.tag "}}
           ports:
-            - containerPort: {{ .Values.go-auth.port }}
+            - containerPort: {{" .Values.go-auth.port "}}
           env:
             - name: MONGO_URI
-              value: {{ .Values.go-auth.mongoUri }}
+              value: {{" .Values.go-auth.mongoUri "}}
             - name: PORT
-              value: {{ .Values.go-auth.port }}
+              value: {{" .Values.go-auth.port "}}
             - name: SECRET_KEY
-              value: {{ .Values.go-auth.secretKey }}
+              value: {{" .Values.go-auth.secretKey "}}
