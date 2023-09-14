@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-chart.fullname" . }}
+  labels:
+    app: {{ include "my-chart.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "my-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "my-chart.name" . }}
+    spec:
+      containers:
+        - name: go-auth
+          image: {{ .Values.go-auth.image.repository }}:{{ .Values.go-auth.image.tag }}
+          ports:
+            - containerPort: {{ .Values.go-auth.port }}
+          env:
+            - name: MONGO_URI
+              value: {{ .Values.go-auth.mongoUri }}
+            - name: PORT
+              value: {{ .Values.go-auth.port }}
+            - name: SECRET_KEY
+              value: {{ .Values.go-auth.secretKey }}
