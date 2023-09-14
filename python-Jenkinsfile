@@ -12,11 +12,12 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                dir('services/python-discuss') {
-                    withSonarQubeEnv('aroldev sonarqube') {
-                        sh 'sonar-scanner'
+                script {
+                    def scannerHome = tool 'sonarqube_5.0'
+                    withSonarQubeEnv(installationName: 'aroldev sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ferran-kubecamp-python -Dsonar.sources=./services/python-discuss -Dsonar.inclusions=**/*.py"
                     }
                 }
             }
