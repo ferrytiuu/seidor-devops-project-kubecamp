@@ -28,7 +28,7 @@ pipeline {
                 dir('services/php-progress') {
                     script{
                         def dockerfile = 'Dockerfile'
-                        app = docker.build("${params.USER}/php-progress:${params.TAG}", "-f .Dockerfile .")
+                        app = docker.build("${params.USER}/php-progress:${params.TAG}", "-f Dockerfile .")
                     }
                 }
             }
