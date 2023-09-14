@@ -1,5 +1,3 @@
-# Github webhook testing 2
-
 # Etapa 1: Construir la aplicación
 FROM mcr.microsoft.com/devcontainers/python:3.10-bullseye as build
 
